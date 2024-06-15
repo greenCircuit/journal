@@ -10,7 +10,6 @@ class Filter:
         self.filtered_data = self.filter_data()
 
     def get_data(self):
-
         return self.filtered_data
 
     def filter_data(self):
@@ -29,12 +28,12 @@ class Filter:
 
     def tags_filter(self):
         if self.filter_param["tags"] != "":
-            self.data.filter(tags__contains=self.filter_param["text"])
+            self.data.filter(tags__icontains=self.filter_param["text"])
 
     def text_filter(self):
         if self.filter_param["text"] != "":
-            self.data =self.data.filter(text__contains=self.filter_param["text"])
+            self.data = Entry.objects.filter(text__icontains=self.filter_param["text"])
 
     def title_filter(self):
         if self.filter_param["text"] != "":
-            self.data.filter(title__contains="rei")
+            self.data =self.data.filter(title__icontains="gcp")

@@ -12,7 +12,8 @@ from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-@login_required
+
+# @login_required
 def home(request):
     entries = Entry.objects.all().order_by("-id")
 
@@ -30,6 +31,7 @@ def home(request):
             sample_filter = {"start_date": "", "end_date": "", "title": "", "text": text_filter}
             filer_object = model_filter.Filter(sample_filter)
             entries = filer_object.get_data()
+            print(entries)
             return render(request, 'dashboard.html', {'entries': entries})
 
     return render(request, 'dashboard.html', {'entries': entries})
@@ -46,29 +48,31 @@ class JournalViewSet(APIView):
 
 # save data that been submitted by a form
 # get information from request that been submitted
-def save_data(received_request):
-    title = received_request.get("title-submit")
-    date_start_str = received_request.get("date-start-submit")
-    date_end_str = received_request.get("date-end-submit")
-    text = received_request.get("text-submit")
-    tags = received_request.get("tags-submit")
+# def save_data(received_request):
+#     title = received_request.get("title-submit")
+#     date_start_str = received_request.get("date-start-submit")
+#     date_end_str = received_request.get("date-end-submit")
+#     text = received_request.get("text-submit")
+#     tags = received_request.get("tags-submit")
+#
+#     date_start_date = datetime.datetime.strptime(date_start_str, "%m-%d-%Y").date()
+#     date_end_date = datetime.datetime.strptime(date_end_str, "%m-%d-%Y").date()
+#
+#     day_of_week_start = received_request.get("date-start-submit")
+#     day_of_week_end = received_request.get("date-end-submit")
 
-    date_start_date = datetime.datetime.strptime(date_start_str, "%m-%d-%Y").date()
-    date_end_date = datetime.datetime.strptime(date_end_str, "%m-%d-%Y").date()
 
-    day_of_week_start = received_request.get("date-start-submit")
-    day_of_week_end = received_request.get("date-end-submit")
 
 
 # make JSON file with all db for back up purposes, automatic if run on desktop only
 # use pk for incremental back up
 # used in full monthly backups
-def full_back_up(entries):
-    all_dic_enry= {}
-    for story in entries:
-        json_story = entry_to_dic(story)
-        all_dic_enry.update(json_story)
-    return all_dic_enry
+# def full_back_up(entries):
+#     all_dic_enry= {}
+#     for story in entries:
+#         json_story = entry_to_dic(story)
+#         all_dic_enry.update(json_story)
+#     return all_dic_enry
 
 
 # return what data is missing from back up file

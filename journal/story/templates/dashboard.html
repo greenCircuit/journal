@@ -2,65 +2,80 @@
 {% load static %}
 {% block content %}
 
-    <div class="container">
-    <form method="POST" action="/">
-        {% csrf_token %}
-        <button class="btn btn-danger btn-submit" id='backup' value="backup">Back up</button>
-        <input type="hidden" name="back_up" id="" placeholder="test">
-    </form>
+<div class="container">
     {% include 'filter.html' %}
+    {% include 'calendar.html' %}
     <!-- starting displaying all items  -->
     <h1>dashboard page</h1>
     <!-- modal start  -->
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-    Launch demo modal
-  </button>
-  
-  <!-- Modal -->
-  <div class="modal fade " id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content bg-dark">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Add entry</h5>
-        </div>
-        <div class="modal-body">
-            <div class="modal-input">
-                <div>Title</div>
-                <input type="text" placeholder="Title" name="title-submit" id="" class="mb-3">
-
-            </div>
-            <div class="modal-input">
-                <div>Start Date</div>
-                <input type="text" placeholder="date m-d-y" name="date-start-submit" id="" class="mb-3">
-
-            </div>
-            <div class="modal-input">
-                <div>End Date</div>
-                <input type="text" placeholder="date m-d-y" name="date-end-submit" id="" class="mb-3">
-
-            </div>
-            <textarea class="form-control mt-5" id="exampleFormControlTextarea1" rows="10" name="text-submit"></textarea>        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" id="entry-submit">Save changes</button>
-        </div>
-      </div>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        Launch demo modal
+    </button>
+    <div class="btn">
+       <a href="api/journey/get_story?format=json" download="journey" id="download-json">
+            Download Stuff
+        </a>
     </div>
-  </div>
+
+    
+    <!-- Modal -->
+    <div class="modal fade " id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add entry</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-input">
+                        <div>Title</div>
+                        <input type="text" placeholder="Title" name="title-submit" id="" class="mb-3">
+
+                    </div>
+                    <div class="modal-input">
+                        <div>Start Date</div>
+                        <input type="date" placeholder="date m-d-y" name="date-start-submit" id="" class="mb-3">
+
+                    </div>
+                    <div class="modal-input">
+                        <div>End Date</div>
+                        <input type="date" placeholder="date m-d-y" name="date-end-submit" id="" class="mb-3">
+
+                    </div>
+                    <textarea class="form-control mt-5" id="exampleFormControlTextarea1" rows="10"
+                        name="text-submit"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="entry-submit">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
-      <!-- modal end  -->
-
-
+    <!-- modal end  -->
     {% for entry in entries %}
+
     <div class="entry">
         <div class="title-text">
-            <h3 class="mb-0">{{ entry.date_start}} {{entry.day_of_week_start}}</h3>
+            <div class="d-flex title-text">
+                <h3 class="title-date">{{ entry.date_start }}</h3>
+                <h3 class="mx-1"> {{entry.day_of_week_start}}</h3>
+            </div>
             <h5 class="pt-0">{{ entry.title }}</h5>
         </div>
         <p>{{ entry.text | linebreaks }}</p>
+        <div class="d-flex">
+            <div class="m-4">
+                <img src="media/images/test.jpg" alt="My Image" height="300" width="400">
+            </div>
+            <div class="m-4">
+                <img src="media/images/test.jpg" alt="My Image" height="300" width="400">
+            </div>
+        </div>
     </div>
 
     {% endfor %}

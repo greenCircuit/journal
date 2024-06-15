@@ -8,8 +8,8 @@ class Entry(models.Model):
     date_start = models.DateField(default=curr_date.datetime.today().date())
     date_end = models.DateField(default=curr_date.datetime.today().date())
 
-    day_of_week_start = models.CharField(max_length=10, default=curr_date.datetime.today().strftime("%A"))
-    day_of_week_end = models.CharField(max_length=10, default="", blank=True)
+    day_of_week_start = models.CharField(max_length=10, blank=True)
+    day_of_week_end = models.CharField(max_length=10, blank=True)
 
     text = models.TextField(max_length=5000)
     tags = models.TextField(max_length=50, blank=True)
@@ -19,6 +19,6 @@ class Entry(models.Model):
         if self.date_start == self.date_end:
             return f"{self.date_start.strftime('%d %B %Y')} {self.title} {self.day_of_week_start}"
         else:
-            return f"{self.date_start.strftime('%d')}-{self.date_end.strftime('%d %B %Y')} {self.title} {self.day_of_week_start}"
+            return f"{self.date_start.strftime('%d')}-{self.date_end.strftime('%d %B %Y')} {self.title} {self.date_start.strftime('%A')}"
 
 
