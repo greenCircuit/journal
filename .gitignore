@@ -5,6 +5,8 @@ static/
 journal/static
 journal/story/stories/
 stories/
-story/migrations/
+journal/story/migrations/**
 __pycache__/
 *.pyc
+journal/story/search/data.json
+**/__pycache__/
