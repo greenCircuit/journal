@@ -1,9 +1,11 @@
+import subprocess
+
 from django.shortcuts import render
 from .models import Entry
 from django.contrib.auth.decorators import login_required
 from .make_back_ups import settings_managment
 import os, datetime, json
-from .search import model_filter
+from .search import picture_match
 #import search
 #api
 from rest_framework import status
@@ -11,30 +13,93 @@ from .serializers import EntrySerializer
 from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from django.http import HttpResponse
+from .models import Entry
+import random
+from django.forms.models import model_to_dict
+from django.db.models import CharField, Value
 
 # @login_required
 def home(request):
-    entries = Entry.objects.all().order_by("-id")
+    entries = Entry.objects.all().order_by("-date_start")
+    entries = entries.values()
+    show_pictures = True
 
-    # check is anything will be needed to be added to db or want to back up data
-    if request.method == "POST":
-        data = request.POST
-        print(list(data.items()))
-        print(data.get("text"))
-        print(request.POST.__contains__("text"))
-        if data.get('back_up') == "" and os.uname()[1] == "shef":
-            all_data_dic = full_back_up(entries)
-            make_new_json_backup("2023_all.json", all_data_dic)
-        if data.get("text"):
-            text_filter = data.get("text")
-            sample_filter = {"start_date": "", "end_date": "", "title": "", "text": text_filter}
-            filer_object = model_filter.Filter(sample_filter)
-            entries = filer_object.get_data()
-            print(entries)
-            return render(request, 'dashboard.html', {'entries': entries})
+
+    # show pictures when in local host and turning on it manually
+    def show_pictures():
+       if show_pictures and os.getenv('GAE_APPLICATION', None) is None and show_pictures:
+            # fake db that has pictures sorted by year and date
+            with open('/home/shef/Desktop/PycharmProjects/journal/journal/story/search/data.json') as data_file:
+                picture_data = json.load(data_file)
+            picture_day_limit: int = 12 # how many pics show a day
+
+            # don't need to crete new array because .update updates entry in memory
+            for entry in entries:
+                date_start = entry['date_start']
+                date_end = entry['date_end']
+                date_range = [ datetime.date.fromordinal(ordinal) for ordinal in range(date_start.toordinal(),date_end.toordinal(),)] # arr that has start to end date
+                all_pics_found = []
+                for curr_date in date_range: # can do singe and day and multiple day picture for a day because use array for loop
+                    curr_year = str(curr_date.year)
+                    curr_date = str(curr_date)
+
+                    # validate that pictures exist for that day
+                    # adding random pictures for each day with max limit and adding them to final array that is entry has
+                    if picture_data.get(curr_year) is not None and picture_data.get(curr_year).get(curr_date) is not None:
+                        pics_found = picture_data.get(curr_year).get(curr_date)
+                        random.shuffle(pics_found)
+                        if len(pics_found) > picture_day_limit:
+                            pics_found = pics_found[:picture_day_limit]
+                            all_pics_found.extend(pics_found)
+                        else:
+                            all_pics_found.extend(pics_found)
+
+                entry.update({"pic_array": all_pics_found})
+
+    show_pictures()
 
     return render(request, 'dashboard.html', {'entries': entries})
+
+# restore db from json
+@login_required
+def restore_db(request):
+    # check enviroment
+    if os.getenv('GAE_APPLICATION', None) and os.getenv('LOGNAME') != "shef":
+        print("running on GCP can't do it that there")
+        return
+    # validate json by not over writing existing id
+    latest_db = subprocess.check_output(os.getenv("restore_path"), shell=True)
+    latest_db = str(latest_db)[2:25] # parsing output of script so have
+    db_path = os.getenv("json_path") +"/"+ latest_db
+
+    entries = Entry.objects.all()
+
+    file =  open(db_path)
+    with open(db_path, "r") as f:
+        all_stories = json.load(f)
+
+    file.close()
+    updated_cont = 0
+    skip_count = 0
+    for input_story in all_stories:
+        # title and text inside article has to be unique
+        if entries.filter(title=input_story['title']).exists() is False and entries.filter(text=input_story['text']).exists() is False:
+            print("found story with new non existing id: " + str(input_story['id']) + " title: " + input_story['title'])
+            new_story = Entry()
+            new_story.title = input_story['title']
+            new_story.date_start = input_story['date_start']
+            new_story.date_end = input_story['date_end']
+            new_story.text = input_story['text']
+            new_story.tags = input_story['tags']
+            new_story.save()
+            updated_cont += 1
+        else:
+            print("found existing entity with id: "+ str(input_story['id']) + " title: " + input_story['title'])
+            skip_count += 1
+    output_msg = "updated: " + str(updated_cont) + " skipped: " + str(skip_count)
+    return HttpResponse(output_msg, headers={"SecretCode": "21234567"})
+
 
 # API end point
 class JournalViewSet(APIView):
@@ -44,95 +109,19 @@ class JournalViewSet(APIView):
         serializer = EntrySerializer(entry, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-
 # save data that been submitted by a form
 # get information from request that been submitted
-# def save_data(received_request):
-#     title = received_request.get("title-submit")
-#     date_start_str = received_request.get("date-start-submit")
-#     date_end_str = received_request.get("date-end-submit")
-#     text = received_request.get("text-submit")
-#     tags = received_request.get("tags-submit")
-#
-#     date_start_date = datetime.datetime.strptime(date_start_str, "%m-%d-%Y").date()
-#     date_end_date = datetime.datetime.strptime(date_end_str, "%m-%d-%Y").date()
-#
-#     day_of_week_start = received_request.get("date-start-submit")
-#     day_of_week_end = received_request.get("date-end-submit")
+def save_data(received_request):
+    title = received_request.get("title-submit")
+    date_start_str = received_request.get("date-start-submit")
+    date_end_str = received_request.get("date-end-submit")
+    text = received_request.get("text-submit")
+    tags = received_request.get("tags-submit")
+
+    date_start_date = datetime.datetime.strptime(date_start_str, "%m-%d-%Y").date()
+    date_end_date = datetime.datetime.strptime(date_end_str, "%m-%d-%Y").date()
 
 
 
 
-# make JSON file with all db for back up purposes, automatic if run on desktop only
-# use pk for incremental back up
-# used in full monthly backups
-# def full_back_up(entries):
-#     all_dic_enry= {}
-#     for story in entries:
-#         json_story = entry_to_dic(story)
-#         all_dic_enry.update(json_story)
-#     return all_dic_enry
-
-
-# return what data is missing from back up file
-# return all missing data
-# get last pk that been recorded in JSON and compare that to db
-def get_missing_json(entries, json_file):
-    last_db_pk = entries[-1].pk
-    last_json_pk = get_last_json_pk(json_file)
-    missing = {}
-    if last_json_pk != last_db_pk:
-        for missing_pk in range(last_json_pk, last_db_pk + 1):
-            curr_object = entries[missing_pk]
-            dic_object = entry_to_dic(curr_object)
-            missing.update(dic_object)
-    return missing
-
-
-# convert one entry to dictionary
-def entry_to_dic(one_entry):
-    one_entry_dic ={
-        one_entry.pk: {
-            "title": one_entry.title,
-            "date_start": one_entry.date_start.strftime('%m/%d/%Y'),
-            "date_end": one_entry.date_end.strftime('%m/%d/%Y'),
-            "day_of_week_start": one_entry.day_of_week_start,
-            "day_of_week_end": one_entry.day_of_week_end,
-            "text": one_entry.text,
-            "tags": one_entry.tags
-        }
-    }
-    return one_entry_dic
-
-
-# get last entry in json back up file
-def get_last_json_pk(file_name):
-    f = open("stories/" + file_name)
-    data = json.load(f)
-    last_pk = 0
-    for pk in data:
-        last_pk = pk
-    f.close()
-    return last_pk
-
-
-# create new json file from input dictionary locally
-def make_new_json_backup(file_name, input_dic):
-    json_converted = json.dumps(input_dic)
-        # setting up dir to store new JSON
-    curr_dir = os.path.dirname(__file__)
-
-        # setting up string of the JSON file to be saved
-        #time_stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-    setting_object = settings_managment.Settings()
-    back_up_string_update = str(setting_object.get_curr_save_version())
-    full_file_name = file_name + " " + back_up_string_update
-    setting_object.set_new_backup_version()
-    full_path = os.path.join(curr_dir, 'stories/', full_file_name)
-
-    # saving JSON file
-    with open(full_path, 'w') as f:
-        f.write(json_converted)
-        print("The json file " + full_file_name + " is created")
 

@@ -62,19 +62,29 @@
     <div class="entry">
         <div class="title-text">
             <div class="d-flex title-text">
-                <h3 class="title-date">{{ entry.date_start }}</h3>
-                <h3 class="mx-1"> {{entry.day_of_week_start}}</h3>
+               <!-- logic to display multiday/single dates correctly  -->
+
+                {% if entry.date_start == entry.date_end %}
+                    <h3 class="title-date">{{ entry.date_start }}</h3>
+                    <h3 class="mx-1"> {{entry.date_start | date:" D"}}</h3>
+                {% else %}
+                    <h3>{{ entry.date_start |date:"d M" }}-</h3>
+                    <h3>{{ entry.date_end |date:"d M, Y, " }}</h3>
+                    <h3>{{ entry.date_start |date:" D " }}-</h3>
+                    <h3>{{ entry.date_end |date:"D"}}</h3>
+                {% endif %}
+
             </div>
-            <h5 class="pt-0">{{ entry.title }}</h5>
+                <h5 class="pt-0">{{ entry.title }}</h5>
         </div>
         <p>{{ entry.text | linebreaks }}</p>
-        <div class="d-flex">
-            <div class="m-4">
-                <img src="media/images/test.jpg" alt="My Image" height="300" width="400">
+        <div class="all-pics-parent">
+            {% for pic_location in entry.pic_array %}
+            <div class="img-wrapper">
+                <img class="m-1 story-img rounded" src="media/images/mounted/{{ pic_location }}"  alt="My Image">
             </div>
-            <div class="m-4">
-                <img src="media/images/test.jpg" alt="My Image" height="300" width="400">
-            </div>
+
+            {% endfor %}
         </div>
     </div>
 
