@@ -23,14 +23,13 @@ from django.db.models import CharField, Value
 def home(request):
     entries = Entry.objects.all().order_by("-date_start")
     entries = entries.values()
-    show_pictures = True
-
 
     # show pictures when in local host and turning on it manually
     def show_pictures():
-       if show_pictures and os.getenv('GAE_APPLICATION', None) is None and show_pictures:
+       if os.getenv('show_pictures') == "True":
             # fake db that has pictures sorted by year and date
-            with open('/home/shef/Desktop/PycharmProjects/journal/journal/story/search/data.json') as data_file:
+            pictures_config = os.getenv('pictures_config')
+            with open(pictures_config) as data_file:
                 picture_data = json.load(data_file)
             picture_day_limit: int = 12 # how many pics show a day
 
