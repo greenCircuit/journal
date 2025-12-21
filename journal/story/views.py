@@ -26,9 +26,9 @@ def home(request):
 
     # show pictures when in local host and turning on it manually
     def show_pictures():
-       if os.getenv('show_pictures') == "True":
+       if os.getenv('SHOW_PICTURES') == "True" and os.getenv('PICTURE_CONFIG') != "":
             # fake db that has pictures sorted by year and date
-            pictures_config = os.getenv('pictures_config')
+            pictures_config = os.getenv('PICTURE_CONFIG')
             with open(pictures_config) as data_file:
                 picture_data = json.load(data_file)
             picture_day_limit: int = 12 # how many pics show a day

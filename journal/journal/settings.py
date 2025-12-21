@@ -84,11 +84,11 @@ WSGI_APPLICATION = 'journal.wsgi.application'
 if os.getenv("db_user", None):
     DATABASES = {
         'default': {
-            'HOST': os.environ.get("db_host", "127.0.0.1"),
-            'PORT': os.environ.get("db_port", "5432"),
-            'NAME': os.environ.get("db_name", "test"), 
-            'USER':os.environ.get("db_user", "test"),
-            'PASSWORD': os.environ.get("sql_token"),
+            'HOST': os.environ.get("DB_HOST", "127.0.0.1"),
+            'PORT': os.environ.get("DB_PORT", "5432"),
+            'NAME': os.environ.get("DB_NAME", "test"), 
+            'USER':os.environ.get("DB_USER", "test"),
+            'PASSWORD': os.environ.get("DB_PASS"),
         }
     }
 else:

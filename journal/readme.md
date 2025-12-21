@@ -1,12 +1,13 @@
 #### env variables 
 # db, not required will default to sqlite if postgress not available
-- db_host
-- db_port 
-- db_name
-- db_user
-- sql_token
+- DB_HOST
+- DB_PORT 
+- DB_NAME
+- DB_USER
+- DB_PASS
 # show pictures
-- show_pictures:  set to "True" is want it 
-- pictures_config:  .json files that will use to display picures
+- SHOW_PICTURES:  set to "True" is want it 
+- PICTURES_CONFIG:  .json files that will use to display picures
 # urls
-- admin_path
+- ADMIN_PATH
+- APP_TOKEN
