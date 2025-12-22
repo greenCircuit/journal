@@ -11,3 +11,5 @@
 # urls
 - ADMIN_PATH
 - APP_TOKEN
+# restore
+- JSON_RESTORE_PATH  # if want to restore db from json
