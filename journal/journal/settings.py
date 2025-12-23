@@ -22,11 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("APP_TOKEN")
+SECRET_KEY = get_random_secret_key()
 if "APP_TOKEN" in os.environ or SECRET_KEY == "":
     SECRET_KEY = os.environ["APP_TOKEN"]
-else:
-    SECRET_KEY = get_random_secret_key()
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False 
@@ -81,7 +79,7 @@ WSGI_APPLICATION = 'journal.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-if os.getenv("db_user", None):
+if os.getenv("DB_USER", None):
     DATABASES = {
         'default': {
             'HOST': os.environ.get("DB_HOST", "127.0.0.1"),
