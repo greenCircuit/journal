@@ -38,3 +38,12 @@ trivy_scan:
     # --exit-code 1 makes the pipeline fail if High/Critical issues are found
     - trivy fs . --scanners vuln --exit-code 1 --severity HIGH,CRITICAL
   allow_failure: true
+
+dockerfile_check:
+  stage: security
+  image: 
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  script:
+    # "config" command scans for Infrastructure as Code (IaC) issues
+    - trivy config . --exit-code 1 --severity HIGH,CRITICAL
