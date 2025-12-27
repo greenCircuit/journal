@@ -5,7 +5,7 @@ stages:
 
 include:
   - template: Jobs/SAST.gitlab-ci.yml
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
 
 lint:
   stage: test
