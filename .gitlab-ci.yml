@@ -1,0 +1,14 @@
+stages:
+  - test
+  - security
+  - release
+  
+include:
+  - template: Jobs/SAST.gitlab-ci.yml
+
+lint:
+  stage: test
+  # This image comes with flake8 pre-installed
+  image: pipelinecomponents/flake8:latest 
+  script:
+    - flake8 .
