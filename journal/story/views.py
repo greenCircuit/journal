@@ -3,7 +3,9 @@ import subprocess
 from django.shortcuts import render
 from .models import Entry
 from django.contrib.auth.decorators import login_required
-import os, datetime, json
+import os
+import datetime
+import json
 # api
 from rest_framework import status
 from .serializers import EntrySerializer
