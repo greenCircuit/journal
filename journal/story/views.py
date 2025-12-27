@@ -3,11 +3,8 @@ import subprocess
 from django.shortcuts import render
 from .models import Entry
 from django.contrib.auth.decorators import login_required
-from .make_back_ups import settings_managment
 import os, datetime, json
-from .search import picture_match
-#import search
-#api
+# api
 from rest_framework import status
 from .serializers import EntrySerializer
 from rest_framework import permissions
@@ -16,8 +13,6 @@ from rest_framework.response import Response
 from django.http import HttpResponse
 from .models import Entry
 import random
-from django.forms.models import model_to_dict
-from django.db.models import CharField, Value
 
 
 # @login_required
@@ -110,15 +105,15 @@ class JournalViewSet(APIView):
         serializer = EntrySerializer(entry, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
+# TODO
 # save data that been submitted by a form
 # get information from request that been submitted
-def save_data(received_request):
-    title = received_request.get("title-submit")
-    date_start_str = received_request.get("date-start-submit")
-    date_end_str = received_request.get("date-end-submit")
-    text = received_request.get("text-submit")
-    tags = received_request.get("tags-submit")
+# def save_data(received_request):
+#     title = received_request.get("title-submit")
+#     date_start_str = received_request.get("date-start-submit")
+#     date_end_str = received_request.get("date-end-submit")
+#     text = received_request.get("text-submit")
+#     tags = received_request.get("tags-submit")
 
-    date_start_date = datetime.datetime.strptime(date_start_str, "%m-%d-%Y").date()
-    date_end_date = datetime.datetime.strptime(date_end_str, "%m-%d-%Y").date()
+#     date_start_date = datetime.datetime.strptime(date_start_str, "%m-%d-%Y").date()
+#     date_end_date = datetime.datetime.strptime(date_end_str, "%m-%d-%Y").date()
