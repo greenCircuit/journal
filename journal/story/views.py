@@ -1,5 +1,3 @@
-import subprocess
-
 from django.shortcuts import render
 from .models import Entry
 from django.contrib.auth.decorators import login_required
@@ -67,7 +65,7 @@ def restore_db(request):
         print("running on GCP can't do it that there")
         return
     # validate json by not over writing existing id
-    latest_db = subprocess.check_output(os.getenv("JSON_RESTORE_PATH"), shell=True)
+    latest_db = os.getenv("JSON_RESTORE_PATH"), shell=True
     latest_db = str(latest_db)[2:25]  # parsing output of script so have
     db_path = os.getenv("json_path") + "/" + latest_db
 

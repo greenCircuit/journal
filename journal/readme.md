@@ -3,8 +3,9 @@
 - DB_HOST
 - DB_PORT 
 - DB_NAME
-- DB_USER
 - DB_PASS
+- DB_USER
+
 # show pictures
 - SHOW_PICTURES:  set to "True" is want it 
 - PICTURES_CONFIG:  .json files that will use to display picures
