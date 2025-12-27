@@ -5,6 +5,10 @@ stages:
 
 include:
   - template: Jobs/SAST.gitlab-ci.yml
+  - project: home-lab/pipeline-catalog
+    file: pipelines/security.yaml
+  - project: home-lab/pipeline-catalog
+    file: pipelines/build.yaml
 
 lint:
   stage: test
@@ -12,6 +16,18 @@ lint:
   script:
     - flake8 .
   allow_failure: true # Set to false if you want to block the release on vulnerabilities
+
+
+img-base:
+  extends: .create_image
+  before_script:
+  - cd ./journal
+  - ls
+  variables:
+    FILE_PATH: "Dockerfile"
+  # rules:
+    # - changes: ["Dockerfile"]
+
 
 # Security scans
 semgrep-sast:
@@ -32,3 +48,7 @@ dockerfile_check:
     entrypoint: [""]
   script:
     - trivy config . --exit-code 1 --severity HIGH,CRITICAL
+
+git-leaks:
+  stage: security
+  extends: .secrets_scan
