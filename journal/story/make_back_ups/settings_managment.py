@@ -7,13 +7,12 @@ class Settings:
         self.file = 'settings.json'
         self.setting = self.data_from_file()
         self.file_path_setting = self.get_file_path()
-        #self.file_path_setting = "test"
+        # self.file_path_setting = "test"
 
     # get filepath for the setting file
     def get_file_path(self):
         curr_dir = os.path.dirname(__file__)
         return os.path.join(curr_dir, self.file)
-
 
     # get all data from file
     def data_from_file(self):
@@ -23,7 +22,6 @@ class Settings:
 
     def get_file_path_setting(self):
         return self.file_path_setting
-
 
     def get_setting(self):
         return self.setting
@@ -40,8 +38,6 @@ class Settings:
         else:
             new_possible += 1
             return new_possible
-
-
 
     # update current_back_up_version in json file
     def set_new_backup_version(self):

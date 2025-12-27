@@ -22,18 +22,18 @@ def home(request):
 
     # show pictures when in local host and turning on it manually
     def show_pictures():
-       if os.getenv('SHOW_PICTURES') == "True" and os.getenv('PICTURE_CONFIG') != "":
+        if os.getenv('SHOW_PICTURES') == "True" and os.getenv('PICTURE_CONFIG') != "":
             # fake db that has pictures sorted by year and date
             pictures_config = os.getenv('PICTURE_CONFIG')
             with open(pictures_config) as data_file:
                 picture_data = json.load(data_file)
-            picture_day_limit: int = 12 # how many pics show a day
+            picture_day_limit: int = 12  # how many pics show a day
 
             # don't need to crete new array because .update updates entry in memory
             for entry in entries:
                 date_start = entry['date_start']
                 date_end = entry['date_end']
-                date_range = [datetime.date.fromordinal(ordinal) for ordinal in range(date_start.toordinal(),date_end.toordinal())] # arr that has start to end date
+                date_range = [datetime.date.fromordinal(ordinal) for ordinal in range(date_start.toordinal(), date_end.toordinal())] # arr that has start to end date
                 all_pics_found = []
                 for curr_date in date_range: # can do singe and day and multiple day picture for a day because use array for loop
                     curr_year = str(curr_date.year)
@@ -66,7 +66,7 @@ def restore_db(request):
         return
     # validate json by not over writing existing id
     latest_db = subprocess.check_output(os.getenv("JSON_RESTORE_PATH"), shell=True)
-    latest_db = str(latest_db)[2:25] # parsing output of script so have
+    latest_db = str(latest_db)[2:25]  # parsing output of script so have
     db_path = os.getenv("json_path") + "/" + latest_db
 
     entries = Entry.objects.all()
