@@ -5,7 +5,8 @@ stages:
 
 include:
   - template: Jobs/SAST.gitlab-ci.yml
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
+
+
 
 lint:
   stage: test
@@ -13,3 +14,14 @@ lint:
   script:
     - flake8 .
   allow_failure: true # Set to false if you want to block the release on vulnerabilities
+
+dependency_scan:
+  stage: security
+  image: registry.gitlab.com/security-products/gemnasium-python:4
+  variables:
+    PIP_REQUIREMENTS_FILE: "journal/requirements.txt" 
+  script:
+    - /analyzer run
+  artifacts:
+    reports:
+      dependency_scanning: gl-dependency-scanning-report.json
