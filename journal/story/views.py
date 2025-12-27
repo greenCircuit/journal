@@ -19,6 +19,7 @@ import random
 from django.forms.models import model_to_dict
 from django.db.models import CharField, Value
 
+
 # @login_required
 def home(request):
     entries = Entry.objects.all().order_by("-date_start")
@@ -37,7 +38,7 @@ def home(request):
             for entry in entries:
                 date_start = entry['date_start']
                 date_end = entry['date_end']
-                date_range = [ datetime.date.fromordinal(ordinal) for ordinal in range(date_start.toordinal(),date_end.toordinal(),)] # arr that has start to end date
+                date_range = [datetime.date.fromordinal(ordinal) for ordinal in range(date_start.toordinal(),date_end.toordinal())] # arr that has start to end date
                 all_pics_found = []
                 for curr_date in date_range: # can do singe and day and multiple day picture for a day because use array for loop
                     curr_year = str(curr_date.year)
@@ -60,6 +61,7 @@ def home(request):
 
     return render(request, 'dashboard.html', {'entries': entries})
 
+
 # restore db from json
 @login_required
 def restore_db(request):
@@ -70,11 +72,11 @@ def restore_db(request):
     # validate json by not over writing existing id
     latest_db = subprocess.check_output(os.getenv("JSON_RESTORE_PATH"), shell=True)
     latest_db = str(latest_db)[2:25] # parsing output of script so have
-    db_path = os.getenv("json_path") +"/"+ latest_db
+    db_path = os.getenv("json_path") + "/" + latest_db
 
     entries = Entry.objects.all()
 
-    file =  open(db_path)
+    file = open(db_path)
     with open(db_path, "r") as f:
         all_stories = json.load(f)
 
@@ -108,6 +110,7 @@ class JournalViewSet(APIView):
         serializer = EntrySerializer(entry, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 # save data that been submitted by a form
 # get information from request that been submitted
 def save_data(received_request):
@@ -119,8 +122,3 @@ def save_data(received_request):
 
     date_start_date = datetime.datetime.strptime(date_start_str, "%m-%d-%Y").date()
     date_end_date = datetime.datetime.strptime(date_end_str, "%m-%d-%Y").date()
-
-
-
-
-
