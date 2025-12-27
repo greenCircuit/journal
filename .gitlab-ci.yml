@@ -25,3 +25,16 @@ dependency_scan:
   artifacts:
     reports:
       dependency_scanning: gl-dependency-scanning-report.json
+
+trivy_scan:
+  stage: security
+  image: 
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  script:
+    # "fs" means filesystem scan
+    # "." scans the current directory
+    # --scanners vuln looks for CVEs in libraries
+    # --exit-code 1 makes the pipeline fail if High/Critical issues are found
+    - trivy fs . --scanners vuln --exit-code 1 --severity HIGH,CRITICAL
+  allow_failure: true
