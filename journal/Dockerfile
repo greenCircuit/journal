@@ -28,13 +28,13 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
     && rm -rf /var/lib/apt/lists/*
-RUN pyton3 manage.py collectstatic
 # Copy wheels from builder and install them
 COPY --from=builder /app/wheels /wheels
 RUN pip install --no-cache /wheels/*
 
 # Copy the rest of your Django project
 COPY . .
+RUN python3 manage.py collectstatic
 
 # Expose the port Gunicorn/Django will run on
 EXPOSE 8000
