@@ -18,17 +18,12 @@ lint:
     - flake8 .
   allow_failure: true # Set to false if you want to block the release on vulnerabilities
 
-
 img-base:
   extends: .create_image
   before_script:
   - cd ./journal
-  - ls
   variables:
     FILE_PATH: "Dockerfile"
-  # rules:
-    # - changes: ["Dockerfile"]
-
 
 # Security scans
 semgrep-sast:
@@ -53,3 +48,11 @@ dockerfile_check:
 git-leaks:
   stage: security
   extends: .secrets_scan
+
+try-image-scan:
+  stage: security
+  image: 
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  script:
+    - trivy image ${CI_REGISTRY_IMAGE}:latest --exit-code 1 --severity HIGH,CRITICAL
