@@ -65,14 +65,12 @@ def restore_db(request):
         print("running on GCP can't do it that there")
         return
     # validate json by not over writing existing id
-    latest_db = os.getenv("JSON_RESTORE_PATH"), shell=True
-    latest_db = str(latest_db)[2:25]  # parsing output of script so have
-    db_path = os.getenv("json_path") + "/" + latest_db
+    latest_db = os.getenv("JSON_RESTORE_PATH")
 
     entries = Entry.objects.all()
 
-    file = open(db_path)
-    with open(db_path, "r") as f:
+    file = open(latest_db)
+    with open(latest_db, "r") as f:
         all_stories = json.load(f)
 
     file.close()
