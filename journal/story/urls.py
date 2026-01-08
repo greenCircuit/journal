@@ -5,6 +5,6 @@ urlpatterns = [
     path("", views.home, name='home'),
     path("api/journey/restore", views.restore_db, name='restore_db'),
     path("api/journey/get_story", views.JournalViewSet, name="api"),
-    path("api/journey/get_story", views.status, name="api")
+    path("status", views.status, name="api")
     
 ]

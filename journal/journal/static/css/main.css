@@ -1,0 +1,72 @@
+/* some global styling */
+:root {
+    --bg-dark: #6c757d;
+    --blue-text: #00bfe6;
+}
+
+
+
+
+.entry{
+    padding: 1em;
+    padding-bottom: 3em
+}
+
+.entry:hover{
+    background-color:rgb(44, 44, 44);
+}
+
+.title-text{
+    color:var(--blue-text);
+}
+
+body, div{
+    color: white;
+}
+
+input, textarea{
+    border-radius: 0.5em;
+    border: 2px solid;
+    color: var(--bg-dark) !important;
+}
+
+/* end of global stuff */
+.modal-input{
+    border-bottom: 1px solid lightgray;
+    padding-top: 1.5em;
+}
+
+
+.fc-daygrid-event{
+    white-space: break-spaces;
+}
+/* img footer */
+.story-img{
+   transition: all 0.3s;
+   height: 100%;
+   width: auto;
+}
+.img-wrapper{
+    height: 150px;
+}
+
+.story-img:hover{
+    transform:scale(2.5);
+}
+
+.all-pics-parent{
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 5px
+}
+/* img footer end */
+
+/* calendar  */
+.accordion-body{
+    background-color: adb5bd !important;
+
+}
+
+
+/* end calendar  */
+
