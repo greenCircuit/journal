@@ -100,6 +100,8 @@ class JournalViewSet(APIView):
         serializer = EntrySerializer(entry, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+def status (request):
+    return HttpResponse("OK", status=200)
 # TODO
 # save data that been submitted by a form
 # get information from request that been submitted
