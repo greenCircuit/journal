@@ -23,11 +23,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = get_random_secret_key()
-if "APP_TOKEN" in os.environ or SECRET_KEY == "":
+if "APP_TOKEN" in os.environ:
     SECRET_KEY = os.environ["APP_TOKEN"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False 
+
+CSRF_TRUSTED_ORIGINS= [os.environ.get("ORIGINS", "http://localhost")]                               # django can be served behind reverse proxy 
+ALLOWED_HOSTS = [os.environ.get("HOST_IP", "127.0.0.1"), os.environ.get("HOST", "localhost")]       # django can be served on localhost or behind reverse proxy that uses dns
 
 ALLOWED_HOSTS = ["*"]
 
@@ -49,6 +52,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', 
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -82,11 +86,12 @@ WSGI_APPLICATION = 'journal.wsgi.application'
 if os.getenv("DB_USER", None):
     DATABASES = {
         'default': {
+            "ENGINE": "django.db.backends.postgresql",
             'HOST': os.environ.get("DB_HOST", "127.0.0.1"),
-            'PORT': os.environ.get("DB_PORT", "5432"),
-            'NAME': os.environ.get("DB_NAME", "test"), 
-            'USER':os.environ.get("DB_USER", "test"),
-            'PASSWORD': os.environ.get("DB_PASS"),
+            'PORT': os.environ.get("DB_PORT", "5430"),
+            'NAME': os.environ.get("DB_NAME", "journey"), 
+            'USER':os.environ.get("DB_USER"),
+            'PASSWORD': os.environ.get("CNPG_DJANGO_PASS"),
         }
     }
 else:
@@ -96,7 +101,6 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 

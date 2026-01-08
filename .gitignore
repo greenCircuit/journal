@@ -1,8 +1,7 @@
 venv/
 .venv
 db.sqlite3
-static/
-journal/static
+/journal/static
 journal/story/stories/
 stories/
 journal/story/migrations/**
@@ -10,3 +9,7 @@ __pycache__/
 *.pyc
 journal/story/search/data.json
 **/__pycache__/
+story/__pycache__/
+
+journal/story/__pycache__/*
+/journal/compose.yaml

@@ -20,3 +20,5 @@ class Entry(models.Model):
             return f"{self.date_start.strftime('%d')}-{self.date_end.strftime('%d %B %Y')} {self.date_start.strftime('%A')}-{self.date_end.strftime('%A')}, {self.title}  "
 
 
+    class Meta:
+        ordering = ['-date_start'] # The minus sign means descending order

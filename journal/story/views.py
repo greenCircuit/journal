@@ -15,7 +15,7 @@ from .models import Entry
 import random
 
 
-# @login_required
+@login_required
 def home(request):
     entries = Entry.objects.all().order_by("-date_start")
     entries = entries.values()
@@ -60,13 +60,8 @@ def home(request):
 # restore db from json
 @login_required
 def restore_db(request):
-    # check enviroment
-    if os.getenv('GAE_APPLICATION', None) and os.getenv('LOGNAME') != "shef":
-        print("running on GCP can't do it that there")
-        return
     # validate json by not over writing existing id
     latest_db = os.getenv("JSON_RESTORE_PATH")
-
     entries = Entry.objects.all()
 
     file = open(latest_db)
@@ -88,6 +83,7 @@ def restore_db(request):
             new_story.tags = input_story['tags']
             new_story.save()
             updated_cont += 1
+            new_story.save()
         else:
             print("found existing entity with id: "+ str(input_story['id']) + " title: " + input_story['title'])
             skip_count += 1
@@ -96,6 +92,7 @@ def restore_db(request):
 
 
 # API end point
+@login_required
 class JournalViewSet(APIView):
     permission_classes = [permissions.IsAuthenticated]
     def get(self, request, *args, **kwargs):
