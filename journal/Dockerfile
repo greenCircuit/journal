@@ -48,4 +48,4 @@ USER django-user
 # RUN rm /bin/sh
 
 # Run the application (using Gunicorn)
-CMD ["gunicorn", "journal.wsgi"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "journal.wsgi"]
